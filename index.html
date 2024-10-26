@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Log</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            color: #1d1d1f;
+            background-color: #fbfbfd;
+        }
+
+        /* 컨테이너 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(180deg, #fbfbfd 0%, #fff 100%);
+        }
+
+        .header h1 {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.005em;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #1d1d1f, #434344);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 24px;
+            color: #86868b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 탭 스타일 */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+            gap: 20px;
+        }
+
+        .tab-button {
+            font-size: 17px;
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            color: #1d1d1f;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #0071e3;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #0071e3;
+        }
+
+        .tab-button.active::after {
+            transform: scaleX(1);
+        }
+
+        /* 폼 스타일 */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 17px;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            font-size: 17px;
+            transition: all 0.3s ease;
+            background-color: #f5f5f7;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* 버튼 스타일 */
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+        }
+
+        /* 로그 엔트리 스타일 */
+        .log-entry {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .log-entry:hover {
+            transform: translateY(-2px);
+        }
+
+        .log-entry h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #1d1d1f;
+        }
+
+        .log-entry p {
+            color: #86868b;
+            margin-bottom: 8px;
+        }
+
+        /* 통계 카드 스타일 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 20px;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+        }
+
+        .stat-card p {
+            font-size: 32px;
+            color: #0071e3;
+            font-weight: 700;
+        }
+
+        /* 필터 섹션 스타일 */
+        .filters {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 관리자 로그인 스타일 */
+        .admin-login {
+            max-width: 400px;
+            margin: 40px auto;
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-login h2 {
+            margin-bottom: 24px;
+            color: #1d1d1f;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 40px;
+            }
+            .header p {
+                font-size: 20px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+        }
+
+        /* 스크롤바 스타일 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0071e3;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0077ed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Work Log</h1>
+            <p>일상적인 업무를 체계적으로 기록하고 관리하세요.</p>
+        </header>
+
+        <div class="tab-container">
+            <button class="tab-button active" onclick="openTab(event, 'WriteLog')">
+                업무일지 작성
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'ViewLogs')">
+                관리자 페이지
+            </button>
+        </div>
+
+        <!-- 업무일지 작성 섹션 -->
+        <div id="WriteLog" class="tabcontent fade-in" style="display: block;">
+            <div class="form-container">
+                <form id="workLogForm" onsubmit="saveWorkLog(event)">
+                    <div class="form-group">
+                        <label for="name">이름</label>
+                        <input type="text" id="name" required placeholder="이름을 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="department">부서</label>
+                        <select id="department" required>
+                            <option value="">부서를 선택하세요</option>
+                            <option value="개발">개발팀</option>
+                            <option value="디자인">디자인팀</option>
+                            <option value="마케팅">마케팅팀</option>
+                            <option value="영업">영업팀</option>
+                            <option value="인사">인사팀</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">날짜</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startTime">출근시간</label>
+                        <input type="time" id="startTime" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endTime">퇴근시간</label>
+                        <input type="time" id="endTime" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="morningWork">오전 업무내역</label>
+                        <textarea id="morningWork" required placeholder="오전에 진행한 업무를 입력하세요"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="afternoonWork">오후 업무내역</label>
+                        <textarea id="afternoonWork" required placeholder="오후에 진행한 업무를 입력하세요"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="button">저장하기</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 관리자 페이지 -->
+        <div id="ViewLogs" class="tabcontent fade-in">
+            <div id="adminLogin" class="admin-login">
+                <h2>관리자 접근</h2>
+                <form id="adminPasswordForm" onsubmit="checkAdminPassword(event)">
+                    <div class="form-group">
+                        <input type="password" id="adminPassword" placeholder="관리자 비밀번호를 입력하세요" required>
+                    </div>
+                    <button type="submit" class="button">접속하기</button>
+                </form>
+            </div>
+
+            <div id="adminContent" style="display: none;">
+                <div class="stats-grid" id="departmentStats">
+                    <!-- 통계가 여기에 표시됩니다 -->
+                </div>
+
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filterDepartment">부서 필터</label>
+                        <select id="filterDepartment" onchange="filterLogs()">
+                            <option value="all">전체 부서</option>
+                            <option value="개발">개발팀</option>
+                            <option value="디자인">디자인팀</option>
+                            <option value="마케팅">마케팅팀</option>
+                            <option value="영업">영업팀</option>
+                            <option value="인사">인사팀</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filterDate">날짜 필터</label>
+                        <input type="date" id="filterDate" onchange="filterLogs()">
+                    </div>
+                </div>
+
+                <div id="logsList">
+                    <!-- 업무일지 목록이 여기에 표시됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 기존 JavaScript 코드는 동일하게 유지
+        const ADMIN_PASSWORD = "admin1234";
+        let isAdminAuthenticated = false;
+
+        function checkAdminPassword(event) {
+            event.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                isAdminAuthenticated = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                displayStats();
+                filterLogs();
+            } else {
+                alert('잘못된 비밀번호입니다.');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            const tablinks = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display =
